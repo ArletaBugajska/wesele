@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guest List - Arleta & Irvis</title>
+<title>RSVP - Arleta i Irvis</title>
 
-<!-- Czcionka Lovelace z Google Fonts -->
+<!-- Czcionka Lovelace -->
 <link href="https://fonts.googleapis.com/css2?family=Lovelace:wght@700&display=swap" rel="stylesheet">
 
 <style>
@@ -32,14 +32,6 @@ h1 {
   font-size: 2em;
   margin-bottom: 20px;
   color: #082567;
-}
-
-/* Elegancka grafika u góry */
-.header-img {
-  display: block;
-  margin: 0 auto 20px auto;
-  width: 150px;
-  opacity: 0.7;
 }
 
 input, select, textarea {
@@ -95,7 +87,6 @@ button:hover {
 <body>
 
 <div class="container">
-<img src="https://i.ibb.co/Z1YH0vN/elegant-flower.png" alt="Elegancka grafika" class="header-img">
 
 <h1 id="title"></h1>
 
@@ -104,11 +95,14 @@ button:hover {
 <!-- Główna osoba -->
 <input id="name" required placeholder="Imię i nazwisko">
 <input id="phone" placeholder="Telefon">
+
 <select id="attendance" required>
   <option value="">--</option>
   <option value="yes"></option>
   <option value="no"></option>
 </select>
+
+<!-- Menu i alergie dla osoby zgłaszającej -->
 <select id="menu">
   <option value="standard"></option>
   <option value="vege"></option>
@@ -223,7 +217,7 @@ document.getElementById("form").addEventListener("submit", function(e){
   });
 
   people.forEach(p=>{
-    fetch("https://script.google.com/macros/s/AKfycbyKcPoyQL3DRp0VEB8xINVHbg0k4i2YsV8xg28BXwybJZ5mgKX7af0VUHNfHTgoazjQ3g/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbz2RpKgjW5Hon0Ag4sYqWtcX_5HMaw_HT2dZJUTX6TRbaYFcU693A5PSGLmb9dod6Z7/exec", {
       method: "POST",
       body: JSON.stringify({
         submissionId: submissionId,
