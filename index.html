@@ -3,28 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>RSVP - Arleta i Irvis</title>
+
+<!-- Czcionka Lovelace z Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Lovelace:wght@700&display=swap" rel="stylesheet">
 
 <style>
 body {
-  font-family: Arial;
-  background: linear-gradient(135deg, #ffffff, #eef2f9);
-  padding: 20px;
+  font-family: 'Lovelace', cursive;
+  background-color: #f2e5d8;
+  margin: 0;
+  padding: 0;
   color: #082567;
 }
 
 .container {
-  max-width: 650px;
-  margin: auto;
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 700px;
+  margin: 40px auto;
+  background: #fffaf4;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  position: relative;
 }
 
 h1 {
   text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #082567;
+}
+
+/* Elegancka grafika u góry */
+.header-img {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 150px;
+  opacity: 0.7;
 }
 
 input, select, textarea {
@@ -33,28 +48,46 @@ input, select, textarea {
   margin: 8px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-family: 'Lovelace', cursive;
+  font-weight: 700;
+  color: #082567;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
   background: #082567;
-  color: white;
+  color: #f2e5d8;
   padding: 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  font-family: 'Lovelace', cursive;
+  font-weight: 700;
+  margin-top: 10px;
+  width: 100%;
+}
+
+button:hover {
+  background: #073059;
 }
 
 .guest {
   border: 1px solid #eee;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 15px;
+  background: #fff7ef;
 }
 
 .success {
   text-align: center;
   font-weight: bold;
+  font-size: 1.3em;
   margin-top: 20px;
+  color: #082567;
 }
 </style>
 </head>
@@ -62,32 +95,34 @@ button {
 <body>
 
 <div class="container">
+<img src="https://i.ibb.co/Z1YH0vN/elegant-flower.png" alt="Elegancka grafika" class="header-img">
+
 <h1 id="title"></h1>
 
 <form id="form">
 
+<!-- Główna osoba -->
 <input id="name" required placeholder="Imię i nazwisko">
 <input id="phone" placeholder="Telefon">
-
 <select id="attendance" required>
-<option value="">--</option>
-<option value="yes"></option>
-<option value="no"></option>
+  <option value="">--</option>
+  <option value="yes"></option>
+  <option value="no"></option>
 </select>
+<select id="menu">
+  <option value="standard"></option>
+  <option value="vege"></option>
+</select>
+<input id="allergies" placeholder="Alergie">
 
 <h3 id="guestsTitle"></h3>
-
 <div id="guests"></div>
-
 <button type="button" onclick="addGuest()">+ Dodaj osobę</button>
 
-<br><br>
 <button type="submit" id="submitBtn"></button>
-
 </form>
 
 <div class="success" id="success"></div>
-
 </div>
 
 <script>
@@ -98,7 +133,7 @@ const t = {
     title: "Arleta i Irvis pobierają się 12.12.2026. Zapamiętaj tę datę!",
     yes: "Potwierdzam",
     no: "Nie przyjdę",
-    guests: "Osoby",
+    guests: "Osoby towarzyszące",
     submit: "Wyślij",
     success: "Dziękujemy za potwierdzenie",
     closed: "Formularz zamknięty",
@@ -122,12 +157,14 @@ const t = {
   }
 }[lang];
 
+// Teksty na stronie
 document.getElementById("title").innerText = t.title;
 document.querySelector("#attendance option[value='yes']").textContent = t.yes;
 document.querySelector("#attendance option[value='no']").textContent = t.no;
 document.getElementById("guestsTitle").innerText = t.guests;
 document.getElementById("submitBtn").innerText = t.submit;
 
+// Dodawanie osoby towarzyszącej
 function addGuest() {
   const div = document.createElement("div");
   div.className = "guest";
@@ -143,39 +180,38 @@ function addGuest() {
   document.getElementById("guests").appendChild(div);
 }
 
-// DATY
+// Daty zamknięcia formularza
 const today = new Date();
 const editDeadline = new Date("2026-10-31");
 const finalDeadline = new Date("2027-06-01");
 
-if (today > finalDeadline) {
-  document.getElementById("form").innerHTML = "<h2>" + t.closed + "</h2>";
+if(today > finalDeadline){
+  document.getElementById("form").innerHTML = "<h2>"+t.closed+"</h2>";
 }
 
-document.getElementById("form").addEventListener("submit", function(e) {
+// Wysyłanie danych
+document.getElementById("form").addEventListener("submit", function(e){
   e.preventDefault();
-
-  if (today > editDeadline) {
+  if(today > editDeadline){
     alert(t.closed);
     return;
   }
 
   const submissionId = Date.now();
-
   const people = [];
 
-  // główna osoba
+  // Główna osoba
   people.push({
     name: document.getElementById("name").value,
     phone: document.getElementById("phone").value,
     attendance: document.getElementById("attendance").value,
-    menu: "",
-    allergies: "",
+    menu: document.getElementById("menu").value,
+    allergies: document.getElementById("allergies").value,
     child: false
   });
 
-  // osoby towarzyszące
-  document.querySelectorAll(".guest").forEach(g => {
+  // Goście
+  document.querySelectorAll(".guest").forEach(g=>{
     people.push({
       name: g.children[0].value,
       phone: document.getElementById("phone").value,
@@ -186,8 +222,8 @@ document.getElementById("form").addEventListener("submit", function(e) {
     });
   });
 
-  people.forEach(p => {
-    fetch("https://script.google.com/macros/s/AKfycbzu_lf-x5dHYyLxCefJ9KiPJKCvpnGJE-ckYjmYJSwbYj_XoVYCTIpH-BVQLwvktL1Pdw/exec", {
+  people.forEach(p=>{
+    fetch("https://script.google.com/macros/s/AKfycbyKcPoyQL3DRp0VEB8xINVHbg0k4i2YsV8xg28BXwybJZ5mgKX7af0VUHNfHTgoazjQ3g/exec", {
       method: "POST",
       body: JSON.stringify({
         submissionId: submissionId,
