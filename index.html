@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>RSVP - Arleta i Irvis</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ffffff, #f3f6fb);
-  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #ffffff, #eef2f9);
   padding: 20px;
   color: #082567;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 650px;
   margin: auto;
   background: white;
   padding: 25px;
@@ -27,21 +27,21 @@ h1 {
   text-align: center;
 }
 
-button {
-  background: #082567;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-input, textarea, select {
+input, select, textarea {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
+}
+
+button {
+  background: #082567;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .guest {
@@ -64,9 +64,10 @@ input, textarea, select {
 <div class="container">
 <h1 id="title"></h1>
 
-<form id="rsvpForm">
-<input type="text" id="name" placeholder="Imię i nazwisko" required>
-<input type="tel" id="phone" placeholder="Telefon">
+<form id="form">
+
+<input id="name" required placeholder="Imię i nazwisko">
+<input id="phone" placeholder="Telefon">
 
 <select id="attendance" required>
 <option value="">--</option>
@@ -74,62 +75,56 @@ input, textarea, select {
 <option value="no"></option>
 </select>
 
-<select id="menu">
-<option value="standard"></option>
-<option value="vege"></option>
-</select>
-
-<textarea id="allergies" placeholder="Alergie"></textarea>
-
 <h3 id="guestsTitle"></h3>
+
 <div id="guests"></div>
-<button type="button" onclick="addGuest()">+</button>
+
+<button type="button" onclick="addGuest()">+ Dodaj osobę</button>
 
 <br><br>
 <button type="submit" id="submitBtn"></button>
+
 </form>
 
-<div class="success" id="successMsg"></div>
+<div class="success" id="success"></div>
+
 </div>
 
 <script>
 const lang = navigator.language.startsWith('es') ? 'es' : 'pl';
 
-const texts = {
+const t = {
   pl: {
     title: "Arleta i Irvis pobierają się 12.12.2026. Zapamiętaj tę datę!",
-    attendanceYes: "Potwierdzam",
-    attendanceNo: "Nie przyjdę",
-    menuStandard: "Standard",
-    menuVege: "Wege",
-    guests: "Osoby towarzyszące",
+    yes: "Potwierdzam",
+    no: "Nie przyjdę",
+    guests: "Osoby",
     submit: "Wyślij",
     success: "Dziękujemy za potwierdzenie",
-    closed: "Formularz zamknięty"
+    closed: "Formularz zamknięty",
+    menu1: "Standard",
+    menu2: "Wege",
+    allergy: "Alergie",
+    child: "Dziecko <16"
   },
   es: {
     title: "¡Arleta e Irvis se casan el 12.12.2026! ¡Guarda esta fecha!",
-    attendanceYes: "Confirmo asistencia",
-    attendanceNo: "No asistiré",
-    menuStandard: "Estándar",
-    menuVege: "Vegetariano",
+    yes: "Confirmo asistencia",
+    no: "No asistiré",
     guests: "Acompañantes",
     submit: "Enviar",
     success: "Gracias por confirmar",
-    closed: "Formulario cerrado"
+    closed: "Formulario cerrado",
+    menu1: "Estándar",
+    menu2: "Vegetariano",
+    allergy: "Alergias",
+    child: "Niño <16"
   }
-};
-
-const t = texts[lang];
+}[lang];
 
 document.getElementById("title").innerText = t.title;
-
-document.querySelector("#attendance option[value='yes']").textContent = t.attendanceYes;
-document.querySelector("#attendance option[value='no']").textContent = t.attendanceNo;
-
-document.querySelector("#menu option[value='standard']").textContent = t.menuStandard;
-document.querySelector("#menu option[value='vege']").textContent = t.menuVege;
-
+document.querySelector("#attendance option[value='yes']").textContent = t.yes;
+document.querySelector("#attendance option[value='no']").textContent = t.no;
 document.getElementById("guestsTitle").innerText = t.guests;
 document.getElementById("submitBtn").innerText = t.submit;
 
@@ -137,22 +132,27 @@ function addGuest() {
   const div = document.createElement("div");
   div.className = "guest";
   div.innerHTML = `
-    <input type="text" placeholder="Imię i nazwisko">
-    <label><input type="checkbox"> dziecko <16</label>
+    <input placeholder="Imię i nazwisko">
+    <select>
+      <option value="standard">${t.menu1}</option>
+      <option value="vege">${t.menu2}</option>
+    </select>
+    <input placeholder="${t.allergy}">
+    <label><input type="checkbox"> ${t.child}</label>
   `;
   document.getElementById("guests").appendChild(div);
 }
 
-// BLOKADA DAT
+// DATY
 const today = new Date();
 const editDeadline = new Date("2026-10-31");
 const finalDeadline = new Date("2027-06-01");
 
 if (today > finalDeadline) {
-  document.getElementById("rsvpForm").innerHTML = "<h2>" + t.closed + "</h2>";
+  document.getElementById("form").innerHTML = "<h2>" + t.closed + "</h2>";
 }
 
-document.getElementById("rsvpForm").addEventListener("submit", function(e) {
+document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
 
   if (today > editDeadline) {
@@ -160,30 +160,44 @@ document.getElementById("rsvpForm").addEventListener("submit", function(e) {
     return;
   }
 
-  const guests = [];
-  document.querySelectorAll(".guest").forEach(g => {
-    guests.push({
-      name: g.children[0].value,
-      child: g.children[1].children[0].checked
-    });
-  });
+  const submissionId = Date.now();
 
-  const data = {
+  const people = [];
+
+  // główna osoba
+  people.push({
     name: document.getElementById("name").value,
     phone: document.getElementById("phone").value,
     attendance: document.getElementById("attendance").value,
-    menu: document.getElementById("menu").value,
-    allergies: document.getElementById("allergies").value,
-    guests: guests
-  };
-
-  fetch("TU_WKLEJ_LINK_Z_GOOGLE_SCRIPT", {
-    method: "POST",
-    body: JSON.stringify(data)
+    menu: "",
+    allergies: "",
+    child: false
   });
 
-  document.getElementById("rsvpForm").style.display = "none";
-  document.getElementById("successMsg").innerText = t.success;
+  // osoby towarzyszące
+  document.querySelectorAll(".guest").forEach(g => {
+    people.push({
+      name: g.children[0].value,
+      phone: document.getElementById("phone").value,
+      attendance: document.getElementById("attendance").value,
+      menu: g.children[1].value,
+      allergies: g.children[2].value,
+      child: g.children[3].children[0].checked
+    });
+  });
+
+  people.forEach(p => {
+    fetch("TU_WKLEJ_LINK_Z_GOOGLE_SCRIPT", {
+      method: "POST",
+      body: JSON.stringify({
+        submissionId: submissionId,
+        ...p
+      })
+    });
+  });
+
+  document.getElementById("form").style.display = "none";
+  document.getElementById("success").innerText = t.success;
 });
 </script>
 
