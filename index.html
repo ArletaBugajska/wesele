@@ -6,7 +6,7 @@
 
 <title>Guest List</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -17,15 +17,12 @@ body {
 }
 
 /* SUBTELNE ZŁOTE TŁO */
-body::before {
-  content: "";
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(circle at 20% 20%, rgba(212,175,55,0.15) 1px, transparent 1px),
-                    radial-gradient(circle at 80% 80%, rgba(212,175,55,0.15) 1px, transparent 1px);
-  background-size: 120px 120px;
-  z-index: -1;
+body {
+  background: #f2e5d8;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(212,175,55,0.25) 2px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(212,175,55,0.2) 2px, transparent 2px);
+  background-size: 100px 100px;
 }
 
 .container {
@@ -34,7 +31,8 @@ body::before {
   background: #fffaf4;
   padding: 35px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(212,175,55,0.3);
 }
 
 h1 {
@@ -47,8 +45,10 @@ input, select {
   padding: 12px;
   margin: 10px 0;
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #e0d5c5;
+  background: #fff;
   font-size: 15px;
+  color: #082567;
 }
 
 select {
